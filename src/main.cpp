@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "led.h"
 // Please include ArtnetWiFi.h to use Artnet on the platform
 // which can use both WiFi and Ethernet
 #include <ArtnetWiFi.h>
@@ -23,8 +24,12 @@ uint8_t value = 0;
 
 const int trig_pin = 5;
 const int echo_pin = 18;
+const int trig_pin2 = 16;
+const int echo_pin2 = 17;
 long ultrason_duration;
+long ultrason_duration2;
 float distance_cm;
+float distance_cm2;
 // Vitesse du son dans l'air
 #define SOUND_SPEED 340
 #define TRIG_PULSE_DURATION_US 10
@@ -44,12 +49,16 @@ void setup()
     Serial.print("WiFi connected, IP = ");
     Serial.println(WiFi.localIP());
 
-                              
-    artnet.begin(); 
+    // init led
+    init_led();
+
+    artnet.begin();
     // artnet.begin(net, subnet); // optionally you can change net and subnet
 
-    pinMode(trig_pin, OUTPUT); // On configure le trig en output
-    pinMode(echo_pin, INPUT);  // On configure l'echo en input
+    pinMode(trig_pin, OUTPUT);  // On configure le trig en output
+    pinMode(trig_pin2, OUTPUT); // On configure le trig en output
+    pinMode(echo_pin, INPUT);   // On configure l'echo en input
+    pinMode(echo_pin2, INPUT);  // On configure l'echo en input
 }
 
 void loop()
@@ -62,28 +71,47 @@ void loop()
     // artnet.streaming(target_ip, net, subnet, univ);  // or you can set net, subnet, and universe
 
     digitalWrite(trig_pin, LOW);
-    delayMicroseconds(2);
     // Créer une impulsion de 10 µs
     digitalWrite(trig_pin, HIGH);
     delayMicroseconds(TRIG_PULSE_DURATION_US);
     digitalWrite(trig_pin, LOW);
-
-    // Renvoie le temps de propagation de l'onde (en µs)
     ultrason_duration = pulseIn(echo_pin, HIGH);
 
-    // Calcul de la distance
-    distance_cm = ultrason_duration * SOUND_SPEED/2 * 0.0001;
+    digitalWrite(trig_pin2, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trig_pin2, HIGH);
+    delayMicroseconds(TRIG_PULSE_DURATION_US);
+    digitalWrite(trig_pin2, LOW);
 
-    if (distance_cm < 30)
+    // Renvoie le temps de propagation de l'onde (en µs)
+    ultrason_duration2 = pulseIn(echo_pin2, HIGH);
+
+    // Calcul de la distance
+    distance_cm = ultrason_duration * SOUND_SPEED / 2 * 0.0001;
+    distance_cm2 = ultrason_duration2 * SOUND_SPEED / 2 * 0.0001;
+
+    if (distance_cm < 10)
     {
         data[0] = 255;
     }
     else
     {
-        data[0] = 0 ;
+        data[0] = 0;
+    }
+
+    if (distance_cm2 < 10)
+    {
+        data[1] = 255;
+    }
+    else
+    {
+        data[1] = 0;
     }
 
     // On affiche la distance sur le port série
     // Serial.print("Distance (cm): ");
     // Serial.println(distance_cm);
-}   
+
+    onboard_led.on = millis() % 2000 < 1000;
+    onboard_led.update();
+}
