@@ -145,7 +145,7 @@ Repeat
     Value_last11 = Value11
     midi11 = $B0 + ($1 * $100) + ((Value11/2)* $10000) + #channel 
     midiOutShortMsg_(my_hMidiOut, midi11)
-  Debug " Le Message artnet-Midi est  " + Hex(midi11) + " expédié vers handle " + Hex(my_hMidiOut)  
+    Debug " Le Message artnet-Midi est  " + Hex(midi11) + " expédié vers handle " + Hex(my_hMidiOut)  
   EndIf
 
  Value12 = getDMX(12)
@@ -153,6 +153,7 @@ Repeat
     Value_last12 = Value12
     midi12= $B0 + ($1 * $100) + ((Value12/2)* $10000) + #channel 
     midiOutShortMsg_(my_hMidiOut, midi12)
+    Debug " Le Message artnet-Midi est  " + Hex(midi12) + " expédié vers handle " + Hex(my_hMidiOut)  
   EndIf
   
   Value13 = getDMX(13)
@@ -288,7 +289,7 @@ EndDataSection
 ;--- fin de data section 
 
 ; IDE Options = PureBasic 6.00 LTS (Windows - x86)
-; CursorPosition = 175
+; CursorPosition = 158
 ; FirstLine = 119
 ; Markers = 105
 ; UseIcon = icon.ico
