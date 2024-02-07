@@ -23,7 +23,7 @@ uint8_t value = 0;
 
 void onArtnet(const uint8_t *data_in, const uint16_t length_in)
 {
-    for (uint8_t i = 11; i < 22; i++)
+    for (uint8_t i = 10; i < 22; i++)
     {
         data[i] = data_in[i];
     }
