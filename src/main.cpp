@@ -1,11 +1,7 @@
 #include <Arduino.h>
 
 #include "led.h"
-// Please include ArtnetWiFi.h to use Artnet on the platform
-// which can use both WiFi and Ethernet
 #include <ArtnetWiFi.h>
-// this is also valid for other platforms which can use only WiFi
-// #include <Artnet.h>
 
 // WiFi stuff
 const char *ssid = "riri_new";
@@ -15,12 +11,24 @@ const IPAddress gateway(2, 0, 0, 1);
 const IPAddress subnet(255, 0, 0, 0);
 
 ArtnetWiFiSender artnet;
+ArtnetWiFiReceiver artnet_in;
+
 const String target_ip = "2.255.255.255";
-uint32_t universe = 9;
+uint8_t universe = 9;
+uint8_t universe_in = 7;
 
 const uint16_t size = 512;
 uint8_t data[size];
 uint8_t value = 0;
+
+void onArtnet(const uint8_t *data_in, const uint16_t length_in)
+{
+    for (uint8_t i = 11; i < 22; i++)
+    {
+        data[i] = data_in[i];
+    }
+}
+
 
 const int trig_pin = 5;
 const int echo_pin = 18;
@@ -49,11 +57,16 @@ void setup()
     Serial.print("WiFi connected, IP = ");
     Serial.println(WiFi.localIP());
 
+    String NAME = "L_LOVER Capteur ";
+    artnet_in.shortname(NAME);
+    artnet_in.longname(NAME);
+
     // init led
     init_led();
 
     artnet.begin();
-    // artnet.begin(net, subnet); // optionally you can change net and subnet
+    artnet_in.begin(); // artnet.begin(net, subnet); // optionally you can change net and subnet
+    artnet_in.subscribe(universe_in, onArtnet);
 
     pinMode(trig_pin, OUTPUT);  // On configure le trig en output
     pinMode(trig_pin2, OUTPUT); // On configure le trig en output
@@ -63,28 +76,24 @@ void setup()
 
 void loop()
 {
-    // value = (millis() / 40) % 256;
-    // memset(data, value, size);
 
+    artnet_in.parse();
     artnet.streaming_data(data, size);
     artnet.streaming(target_ip, universe); // automatically send set data in 40fps
     // artnet.streaming(target_ip, net, subnet, univ);  // or you can set net, subnet, and universe
 
     digitalWrite(trig_pin, LOW);
-    // Créer une impulsion de 10 µs
     digitalWrite(trig_pin, HIGH);
-    delayMicroseconds(TRIG_PULSE_DURATION_US);
+    delayMicroseconds(TRIG_PULSE_DURATION_US); // Créer une impulsion de 10 µs
     digitalWrite(trig_pin, LOW);
-    ultrason_duration = pulseIn(echo_pin, HIGH);
+    ultrason_duration = pulseIn(echo_pin, HIGH); // Renvoie le temps de propagation de l'onde (en µs)
 
     digitalWrite(trig_pin2, LOW);
     delayMicroseconds(2);
     digitalWrite(trig_pin2, HIGH);
-    delayMicroseconds(TRIG_PULSE_DURATION_US);
+    delayMicroseconds(TRIG_PULSE_DURATION_US); // Créer une impulsion de 10 µs
     digitalWrite(trig_pin2, LOW);
-
-    // Renvoie le temps de propagation de l'onde (en µs)
-    ultrason_duration2 = pulseIn(echo_pin2, HIGH);
+    ultrason_duration2 = pulseIn(echo_pin2, HIGH); // Renvoie le temps de propagation de l'onde (en µs)
 
     // Calcul de la distance
     distance_cm = ultrason_duration * SOUND_SPEED / 2 * 0.0001;
@@ -107,10 +116,6 @@ void loop()
     {
         data[1] = 0;
     }
-
-    // On affiche la distance sur le port série
-    // Serial.print("Distance (cm): ");
-    // Serial.println(distance_cm);
 
     onboard_led.on = millis() % 2000 < 1000;
     onboard_led.update();
