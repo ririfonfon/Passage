@@ -74,19 +74,19 @@ Select OSVersion()
 
 
 
-; German forum: http://robsite.de/php/pureboard/viewtopic.php?t=2297&highlight=
 ; Author: Richard Fontaine
 ; Date: 6. Fevrier 2024
 ; OS: Windows
 
 
-  IncludeFile   "MIDI_MyVariables.pb"
   IncludeFile   "MidiRequester.pb"
   IncludeFile   "artnet.pb"
 
 
-;--- MAINPROGRAM 
-
+  ;--- MAINPROGRAM 
+  #channel = 0 ;CH 1 MIDI midi output #channel  1..16 (= 0..15)
+  #Interval = 40
+  
 Global OutDevice.l 
 Global InDevice.l 
 
@@ -140,70 +140,89 @@ Repeat
 ;---------- artnet in
   
   
-  Value1 = getDMX(1)
-  If (Value1 <> Value_last1)
-    Debug "value " + Value1
-    Value_last1 = Value1
-    midi1= $B0 + ($1 * $100) + ((Value1/2)* $10000) + #channel1 
-    midiOutShortMsg_(my_hMidiOut, midi1)
-  Debug "midi 1 " + Hex(midi1)+" Le Message artnet-Midi est  " + Hex(midi1) + " expédié vers handle " + Hex(my_hMidiOut)  
+  Value11 = getDMX(11)
+  If (Value11 <> Value_last11)
+    Value_last11 = Value11
+    midi11 = $B0 + ($1 * $100) + ((Value11/2)* $10000) + #channel 
+    midiOutShortMsg_(my_hMidiOut, midi11)
+    Debug " Le Message artnet-Midi est  " + Hex(midi11) + " expédié vers handle " + Hex(my_hMidiOut)  
   EndIf
 
- Value2 = getDMX(2)
-  If (Value2 <> Value_last2)
-    Value_last2 = Value2
-    midi2= $B0 + ($1 * $100) + ((Value2/2)* $10000) + #channel1 
-    midiOutShortMsg_(my_hMidiOut, midi2)
-  Debug "midi 1 " + Hex(midi1)+" Le Message artnet-Midi est  " + Hex(midi1) + " expédié vers handle " + Hex(my_hMidiOut)  
+ Value12 = getDMX(12)
+  If (Value12 <> Value_last12)
+    Value_last12 = Value12
+    midi12= $B0 + ($1 * $100) + ((Value12/2)* $10000) + #channel 
+    midiOutShortMsg_(my_hMidiOut, midi12)
+    Debug " Le Message artnet-Midi est  " + Hex(midi12) + " expédié vers handle " + Hex(my_hMidiOut)  
+  EndIf
+  
+  Value13 = getDMX(13)
+  If (Value13 <> Value_last13)
+    Value_last13 = Value13
+    midi13= $B0 + ($1 * $100) + ((Value13/2)* $10000) + #channel 
+    midiOutShortMsg_(my_hMidiOut, midi13)
+  EndIf
+  
+  Value14 = getDMX(14)
+  If (Value14 <> Value_last14)
+    Value_last14 = Value14
+    midi14= $B0 + ($1 * $100) + ((Value14/2)* $10000) + #channel 
+    midiOutShortMsg_(my_hMidiOut, midi14)
+  EndIf
+  
+  Value15 = getDMX(15)
+  If (Value15 <> Value_last15)
+    Value_last15 = Value15
+    midi15= $B0 + ($1 * $100) + ((Value15/2)* $10000) + #channel 
+    midiOutShortMsg_(my_hMidiOut, midi15)
   EndIf
   
   Value16 = getDMX(16)
   If (Value16 <> Value_last16)
     Value_last16 = Value16
-    midi16= $B0 + ($2 * $100) + ((Value16/2)* $10000) + #channel1 
-    midiOutShortMsg_(my_hMidiOut, midi16)
-  ;Debug "midi 16 " + Hex(midi16)+" Le Message artnet-Midi est  " + Hex(midi16) + " expédié vers handle " + Hex(my_hMidiOut2)    
+    midi16= $B0 + ($2 * $100) + ((Value16/2)* $10000) + #channel 
+    midiOutShortMsg_(my_hMidiOut, midi16)  
   EndIf
   
   Value17 = getDMX(17)
   If (Value17 <> Value_last17)
     Value_last17 = Value17
-    midi17= $B0 + ($3 * $100) + ((Value17/2)* $10000) + #channel1 
+    midi17= $B0 + ($3 * $100) + ((Value17/2)* $10000) + #channel 
     midiOutShortMsg_(my_hMidiOut, midi17)
   EndIf
   
   Value18 = getDMX(18)
   If (Value18 <> Value_last18)
     Value_last18 = Value18
-    midi18= $B0 + ($4 * $100) + ((Value18/2)* $10000) + #channel1 
+    midi18= $B0 + ($4 * $100) + ((Value18/2)* $10000) + #channel 
     midiOutShortMsg_(my_hMidiOut, midi18)
   EndIf
   
   Value19 = getDMX(19)
   If (Value19 <> Value_last19)
     Value_last19 = Value19
-    midi19= $B0 + ($5 * $100) + ((Value19/2)* $10000) + #channel1 
+    midi19= $B0 + ($5 * $100) + ((Value19/2)* $10000) + #channel 
     midiOutShortMsg_(my_hMidiOut, midi19)
   EndIf
   
   Value20 = getDMX(20)
   If (Value20 <> Value_last20)
     Value_last20 = Value20
-    midi20= $B0 + ($6 * $100) + ((Value20/2)* $10000) + #channel1 
+    midi20= $B0 + ($6 * $100) + ((Value20/2)* $10000) + #channel 
     midiOutShortMsg_(my_hMidiOut, midi20)
   EndIf
  
  Value21 = getDMX(21)
   If (Value21 <> Value_last21)
     Value_last21 = Value21
-    midi21= $B0 + ($7 * $100) + ((Value21/2)* $10000) + #channel1 
+    midi21= $B0 + ($7 * $100) + ((Value21/2)* $10000) + #channel 
     midiOutShortMsg_(my_hMidiOut, midi21)
   EndIf
  
  Value22 = getDMX(22)
   If (Value22 <> Value_last22)
     Value_last22 = Value22
-    midi22= $B0 + ($8 * $100) + ((Value22/2)* $10000) + #channel1 
+    midi22= $B0 + ($8 * $100) + ((Value22/2)* $10000) + #channel 
     midiOutShortMsg_(my_hMidiOut, midi22)
   EndIf
  
@@ -270,7 +289,8 @@ EndDataSection
 ;--- fin de data section 
 
 ; IDE Options = PureBasic 6.00 LTS (Windows - x86)
-; CursorPosition = 11
+; CursorPosition = 158
+; FirstLine = 119
 ; Markers = 105
 ; UseIcon = icon.ico
 ; Executable = ..\V6\812 V9 2.exe

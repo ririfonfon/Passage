@@ -56,14 +56,14 @@ Global OutARTNET
 
 ;------------- artnet 
 
-TextGadget(31, 5, 250, #Column, 18, "Noeud ARTNET In:", #PB_Text_Center | #PB_Text_Border) 
+TextGadget(31, 5, 250, #Column, 18, "Noeud 9 ARTNET In:", #PB_Text_Center | #PB_Text_Border) 
       ListViewGadget(32, 5, 270, #Column, 100) 
       For a=0 To 15
         
         AddGadgetItem(32,-1,Str(a))
       Next a
       
-TextGadget(33, #Offset, 250, #Column, 18, "Noeud ARTNET Out:", #PB_Text_Center | #PB_Text_Border) 
+TextGadget(33, #Offset, 250, #Column, 18, "Noeud 15 ARTNET Out:", #PB_Text_Center | #PB_Text_Border) 
       ListViewGadget(34, #Offset, 270, #Column, 100) 
       For b=0 To 15
         
@@ -188,5 +188,5 @@ TextGadget(33, #Offset, 250, #Column, 18, "Noeud ARTNET Out:", #PB_Text_Center |
  
 EndProcedure 
 ; IDE Options = PureBasic 6.00 LTS (Windows - x86)
-; CursorPosition = 22
+; CursorPosition = 47
 ; Folding = -
