@@ -4,8 +4,10 @@
 #include <ArtnetWiFi.h>
 
 // WiFi stuff
-const char *ssid = "riri_new";
-const char *pwd = "B2az41opbn6397";
+const char *ssid = "filsdecrea";
+const char *pwd = "";
+// const char *ssid = "riri_new";
+// const char *pwd = "B2az41opbn6397";
 const IPAddress ip(2, 0, 0, 101);
 const IPAddress gateway(2, 0, 0, 1);
 const IPAddress subnet(255, 0, 0, 0);
@@ -29,18 +31,14 @@ void onArtnet(const uint8_t *data_in, const uint16_t length_in)
     }
 }
 
-
 const int trig_pin = 5;
-const int echo_pin = 18;
-const int trig_pin2 = 16;
-const int echo_pin2 = 17;
-long ultrason_duration;
-long ultrason_duration2;
-float distance_cm;
-float distance_cm2;
-// Vitesse du son dans l'air
-#define SOUND_SPEED 340
-#define TRIG_PULSE_DURATION_US 10
+const int trig_pin2 = 17;
+int trigstate = 0;
+int trigstate2 = 0;
+boolean trig = false;
+boolean trig2 = false;
+boolean oldtrig = false;
+boolean oldtrig2 = false;
 
 void setup()
 {
@@ -68,10 +66,8 @@ void setup()
     artnet_in.begin(); // artnet.begin(net, subnet); // optionally you can change net and subnet
     artnet_in.subscribe(universe_in, onArtnet);
 
-    pinMode(trig_pin, OUTPUT);  // On configure le trig en output
-    pinMode(trig_pin2, OUTPUT); // On configure le trig en output
-    pinMode(echo_pin, INPUT);   // On configure l'echo en input
-    pinMode(echo_pin2, INPUT);  // On configure l'echo en input
+    pinMode(trig_pin, INPUT_PULLDOWN);
+    pinMode(trig_pin2, INPUT_PULLDOWN);
 }
 
 void loop()
@@ -82,41 +78,45 @@ void loop()
     artnet.streaming(target_ip, universe); // automatically send set data in 40fps
     // artnet.streaming(target_ip, net, subnet, univ);  // or you can set net, subnet, and universe
 
-    digitalWrite(trig_pin, LOW);
-    digitalWrite(trig_pin, HIGH);
-    delayMicroseconds(TRIG_PULSE_DURATION_US); // Créer une impulsion de 10 µs
-    digitalWrite(trig_pin, LOW);
-    ultrason_duration = pulseIn(echo_pin, HIGH); // Renvoie le temps de propagation de l'onde (en µs)
+    oldtrig = trig;
+    oldtrig2 = trig2;
 
-    digitalWrite(trig_pin2, LOW);
-    delayMicroseconds(2);
-    digitalWrite(trig_pin2, HIGH);
-    delayMicroseconds(TRIG_PULSE_DURATION_US); // Créer une impulsion de 10 µs
-    digitalWrite(trig_pin2, LOW);
-    ultrason_duration2 = pulseIn(echo_pin2, HIGH); // Renvoie le temps de propagation de l'onde (en µs)
+    trigstate = digitalRead(trig_pin);
+    trigstate2 = digitalRead(trig_pin2);
 
-    // Calcul de la distance
-    distance_cm = ultrason_duration * SOUND_SPEED / 2 * 0.0001;
-    distance_cm2 = ultrason_duration2 * SOUND_SPEED / 2 * 0.0001;
-
-    if (distance_cm < 10)
+    if (trigstate == HIGH)
     {
         data[0] = 255;
+        trig = true;
     }
     else
     {
         data[0] = 0;
+        trig = false;
     }
 
-    if (distance_cm2 < 10)
+    if (trigstate2 == HIGH)
     {
         data[1] = 255;
+        trig2 = true;
     }
     else
     {
         data[1] = 0;
+        trig2 = false;
     }
 
+    if (oldtrig != trig)
+    {
+        Serial.print("Trig = ");
+        Serial.println(trig);
+    }
+
+    if (oldtrig2!= trig2)
+    {
+        Serial.print("Trig2 = ");
+        Serial.println(trig2);
+    }
     onboard_led.on = millis() % 2000 < 1000;
     onboard_led.update();
 }
