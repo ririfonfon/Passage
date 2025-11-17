@@ -31,8 +31,8 @@ void onArtnet(const uint8_t *data_in, const uint16_t length_in)
     }
 }
 
-const int trig_pin = 5;
-const int trig_pin2 = 17;
+const int trig_pin = 25;
+const int trig_pin2 = 26;
 int trigstate = 0;
 int trigstate2 = 0;
 boolean trig = false;
